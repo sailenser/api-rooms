@@ -1,0 +1,43 @@
+services:
+    nginx:
+        image: nginx:latest
+        volumes:
+            - ./:/var/www
+            - ./_docker/nginx/conf.d:/etc/nginx/conf.d
+        ports:
+            - "8896:3476"
+        depends_on:
+            - app
+        container_name: ipr-room-nginx
+
+    app:
+        build:
+            context: .
+            dockerfile: _docker/app/Dockerfile
+        volumes:
+            - ./:/var/www
+        depends_on:
+            - mysql
+        container_name: ipr-room-app
+
+    mysql:
+        image: mysql:8.3
+        restart: always
+        volumes:
+            - ./tmp/db:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: iprRoomDb
+            MYSQL_ROOT_PASSWORD: root
+        ports:
+            - "8101:3306"
+        container_name: ipr-room-mysql
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin:latest
+        restart: always
+        ports:
+            - "8080:80"
+        environment:
+            PMA_HOST: mysql
+            MYSQL_ROOT_PASSWORD: root
+        container_name: ipr-room-phpmyadmin

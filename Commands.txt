@@ -1,0 +1,65 @@
+http://localhost:8896/
+тут делаем api для ssr
+
+Контейнеры докер:
+1) docker-compose up -d
+2) заходим в терминал контейнера app и выполняем там composer i
+3) там же внутри докер контейнера выполнить php artisan migrate
+4) заходим на http://localhost:8896/
+
+Для установки Api нужно выполнить команду:
+php artisan install:api - кстати эта команда ставит лишнее типа laravel/sanctum или laravel/sail, над попробовать без него
+
+wsl
+http://api-my-ssr-dev.ru:8876/
+удалить лишние файлы при копировании
+sudo find /var/www/api-my-ssr-dev.ru -type f -name '*Zone.Identifier' -delete
+
+http://localhost:8080/
+phpMyAdmin
+
+Чиним корсы
+php artisan config:publish cors
+
+Создание бытовых команд(#DB_HOST=base) для выполнения миграций!!!!
+DB_HOST=127.0.0.1 для получения инфы с сайта
+php artisan make:controller PostsController  - создать контроллер
+php artisan make:controller UserController --api - создать контроллер с методами (index, store, show, update, destroy)
+php artisan make:migration create_posts_table - создать миграцию
+php artisan migrate:refresh - перезоздать таблицы из миграции
+php artisan make:model Posts - создать модель
+php artisan make:seeder PostsSeeder - создать наполнитель текста
+php artisan db:seed - запуск наполнителя текста
+php artisan migrate:fresh --seed - Если нужно очистить базу и пересоздать все таблицы перед заполнением
+php artisan make:model User -mcr где:
+-m — создаёт миграцию
+-c — создаёт контроллер
+-r — делает контроллер ресурсным (с CRUD методами)
+
+php artisan config:cache
+php artisan config:clear
+php artisan cache:clear
+php artisan route:cache
+
+php artisan key:generate
+
+docker exec -it api-my-ssr-app11 php artisan config:clear
+docker exec -it api-my-ssr-app11 php artisan cache:clear
+docker exec -it api-my-ssr-app11 php artisan config:cache
+
+Применить права для Debian файлов если php storm ругается
+sudo chown -R $USER:$USER api-my-ssr-dev.ru
+
+Создание нового проекта
+https://www.binaryboxtuts.com/php-tutorials/laravel-11-json-web-tokenjwt-authentication/ - JWT token laravel
+
+https://laravel.com/docs/11.x/routing#cors - правка корсов
+cors.php:
+'paths' => ['*'],
+'allowed_methods' => ['*'],
+'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:3000')],
+'allowed_origins_patterns' => [],
+'allowed_headers' => ['*'],
+'exposed_headers' => [],
+'max_age' => 0,
+'supports_credentials' => true,
